@@ -7,7 +7,7 @@ const User = require("../models/User");
 
 exports.createMenu = async (req, res) => {
     try {
-        let { name, menuItems, template } = req.body;
+        let { name, template } = req.body;
         const restaurantId = req.user.rid;
 
         if (!name) {
@@ -27,35 +27,10 @@ exports.createMenu = async (req, res) => {
             throw new Error("Menu already exists");
         }
 
-        if (!menuItems || !Array.isArray(menuItems) || !menuItems.length) {
-            throw new Error("Please add menu items");
-        }
-
-        // Menu items validation
-        for (let i = 0; i < menuItems.length; i++) {
-            const item = menuItems[i];
-
-            if (!item.name) {
-                throw new Error("Item name is mandatory");
-            }
-
-            if (!item.price) {
-                throw new Error("Item price is mandatory");
-            }
-
-            if (item.price <= 0) {
-                throw new Error(
-                    "Item price should be a positive & non-zero number"
-                );
-            }
-
-            item.price = Number(item.price).toFixed(2);
-        }
-
         const menu = new Menu({
             name,
             restaurantId,
-            menuItems,
+            menuItems: [],
             isActive: !hasAnyActiveMenu,
             template: template || menutemplates[0],
         });
@@ -271,10 +246,7 @@ exports.getOrderDetails = async (req, res) => {
         const { id } = req.params;
         const restaurantId = req.user.rid;
 
-        const order = await Order.findOne(
-            { _id: id, restaurantId },
-            { items: 1 }
-        ).lean();
+        const order = await Order.findOne({ _id: id, restaurantId }).lean();
 
         if (!order) {
             throw new Error("No order found");

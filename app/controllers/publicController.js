@@ -24,7 +24,7 @@ exports.getRestaurantMenu = async (req, res) => {
 
 exports.createOrder = async (req, res) => {
     try {
-        const { customerName, customerPhone, restaurantId, cart, menuId } =
+        const { customerName, customerPhone, tableNumber, restaurantId, cart, menuId } =
             req.body;
 
         if (!customerName) {
@@ -82,6 +82,7 @@ exports.createOrder = async (req, res) => {
         const order = new Order({
             customerName,
             customerPhone,
+            tableNumber,
             restaurantId,
             items,
             total,

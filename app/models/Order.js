@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { orderstatus } = require("../constants");
 
 const orderSchema = new mongoose.Schema(
     {
@@ -8,6 +7,9 @@ const orderSchema = new mongoose.Schema(
             required: true,
         },
         customerPhone: {
+            type: String,
+        },
+        tableNumber: {
             type: String,
         },
         restaurantId: {
@@ -40,8 +42,6 @@ const orderSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            enum: orderstatus,
-            default: orderstatus[0],
         },
     },
     { timestamps: true }

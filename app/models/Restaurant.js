@@ -24,7 +24,7 @@ const restaurantSchema = new mongoose.Schema(
         },
         priceunit: {
             type: String,
-            default: "Rs",
+            default: "INR",
         },
         isActive: {
             type: Boolean,

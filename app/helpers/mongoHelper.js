@@ -14,5 +14,6 @@ exports.mongoconnect = () => {
         .catch((e) => {
             console.log("Mongo connection failed");
             console.error(e);
+            process.exit(0);
         });
 };

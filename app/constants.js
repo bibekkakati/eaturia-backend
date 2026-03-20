@@ -26,5 +26,3 @@ exports.publicroutes = {
 };
 
 exports.menutemplates = ["BASIC"];
-
-exports.orderstatus = ["PENDING", "PROCESSING", "DELIVERED", "CANCELLED"];
