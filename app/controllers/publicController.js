@@ -86,6 +86,7 @@ exports.createOrder = async (req, res) => {
             restaurantId,
             items,
             total,
+            status: "PENDING",
         });
 
         await order.save();
