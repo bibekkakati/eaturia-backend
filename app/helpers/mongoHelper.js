@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const MONGO_CONNECTION = process.env.MONGO_CONNECTION;
 
+// Establish connection to MongoDB using environmental credentials
 exports.mongoconnect = () => {
     // Connect to MongoDB
     mongoose

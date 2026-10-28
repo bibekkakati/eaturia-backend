@@ -5,10 +5,12 @@ const { failure } = require("../helpers/responseHelper");
 const authenticate = (req, res, next) => {
     try {
         const route = req.path.split("/")[3];
+        // Allow public access based on the route classification in constants.js
         if (publicroutes[route]) {
             return next();
         }
 
+        // Extract token from the Authorization header and verify its validity
         const token = req.header("Authorization").replace("Bearer ", "");
         req.user = verifyToken(token);
 

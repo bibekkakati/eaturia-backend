@@ -3,6 +3,7 @@ const User = require("../models/User");
 const { getAuthToken } = require("../helpers/authHelper");
 const { success, failure } = require("../helpers/responseHelper");
 
+// Authenticate user and generate authorization token
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;

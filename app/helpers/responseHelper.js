@@ -1,3 +1,4 @@
+// Send a standardized success response
 exports.success = (
     response,
     message = "Success",
@@ -14,6 +15,7 @@ exports.success = (
     });
 };
 
+// Send a standardized failure/error response with appropriate error codes
 exports.failure = (response, error, code = 400, payload) => {
     if (!response || !error) {
         return process.exit(0);

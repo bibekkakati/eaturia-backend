@@ -5,6 +5,7 @@ const Order = require("../models/Order");
 const Restaurant = require("../models/Restaurant");
 const User = require("../models/User");
 
+// Create a new menu for the authenticated restaurant
 exports.createMenu = async (req, res) => {
     try {
         let { name, template } = req.body;
@@ -14,15 +15,12 @@ exports.createMenu = async (req, res) => {
             throw new Error("Menu name is mandatory");
         }
 
-        const existingMenus =
-            (await Menu.find(
-                { restaurantId },
-                { name: 1, isActive: 1 }
-            ).lean()) || [];
+        const existingMenus = (await Menu.find({ restaurantId }, { name: 1, isActive: 1 }).lean()) || [];
 
         const hasAnyActiveMenu = existingMenus.some((v) => v.isActive == true);
         const isMenuNameExists = existingMenus.some((v) => v.name == name);
 
+        // Prevent duplicate menu names for the same restaurant
         if (isMenuNameExists) {
             throw new Error("Menu already exists");
         }
@@ -31,6 +29,7 @@ exports.createMenu = async (req, res) => {
             name,
             restaurantId,
             menuItems: [],
+            // Automatically activate the first menu if no other active menu exists
             isActive: !hasAnyActiveMenu,
             template: template || menutemplates[0],
         });
@@ -44,6 +43,7 @@ exports.createMenu = async (req, res) => {
     }
 };
 
+// Update an existing menu's details and items
 exports.updateMenu = async (req, res) => {
     try {
         const { id } = req.params;
@@ -53,41 +53,30 @@ exports.updateMenu = async (req, res) => {
         // Menu items validation
         for (let i = 0; i < menuItems?.length; i++) {
             const item = menuItems[i];
-
             if (!item.name) {
                 throw new Error("Item name is mandatory");
             }
-
             if (!item.price) {
                 throw new Error("Item price is mandatory");
             }
-
             if (item.price <= 0) {
                 throw new Error(
                     "Item price should be a positive & non-zero number"
                 );
             }
-
             item.price = Number(item.price).toFixed(2);
             item.isActive = Boolean(item.isActive);
         }
 
         const update = {};
-
         if (name) {
             update.name = name;
         }
-
         if (menuItems) {
             update.menuItems = menuItems;
         }
 
-        const menu = await Menu.findOneAndUpdate(
-            { _id: id, restaurantId },
-            update,
-            { new: true }
-        ).lean();
-
+        const menu = await Menu.findOneAndUpdate({ _id: id, restaurantId }, update, { new: true }).lean();
         if (!menu) {
             throw new Error("Menu not found");
         }
@@ -99,12 +88,13 @@ exports.updateMenu = async (req, res) => {
     }
 };
 
+// Set a specific menu as the "Live" or active menu
 exports.liveMenu = async (req, res) => {
     try {
         const { id } = req.params;
         const restaurantId = req.user.rid;
 
-        // If trying to activate a new menu, de-activate all other menus
+        // De-activate all existing menus for this restaurant before activating the target menu
         await Menu.updateMany({ restaurantId }, { isActive: false }).lean();
 
         const menu = await Menu.findOneAndUpdate(
@@ -124,6 +114,7 @@ exports.liveMenu = async (req, res) => {
     }
 };
 
+// Permanently delete a menu by ID
 exports.deleteMenu = async (req, res) => {
     try {
         const { id } = req.params;
@@ -145,6 +136,7 @@ exports.deleteMenu = async (req, res) => {
     }
 };
 
+// Fetch all menus associated with the authenticated restaurant
 exports.getMenusByRestaurant = async (req, res) => {
     try {
         const restaurantId = req.user.rid;
@@ -161,6 +153,7 @@ exports.getMenusByRestaurant = async (req, res) => {
     }
 };
 
+// Fetch detailed information for a specific menu by ID
 exports.getMenuById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -179,6 +172,7 @@ exports.getMenuById = async (req, res) => {
     }
 };
 
+// Fetch profile details for the authenticated restaurant
 exports.getRestaurantDetails = async (req, res) => {
     try {
         const id = req.user.rid;
@@ -201,6 +195,7 @@ exports.getRestaurantDetails = async (req, res) => {
     }
 };
 
+// Fetch all administrators for the authenticated restaurant
 exports.getRestaurantAdminList = async (req, res) => {
     try {
         const id = req.user.rid;
@@ -228,6 +223,7 @@ exports.getRestaurantAdminList = async (req, res) => {
     }
 };
 
+// Fetch all orders received by the authenticated restaurant
 exports.getOrdersByRestaurant = async (req, res) => {
     try {
         const restaurantId = req.user.rid;
@@ -241,6 +237,7 @@ exports.getOrdersByRestaurant = async (req, res) => {
     }
 };
 
+// Fetch detailed information for a specific order by ID
 exports.getOrderDetails = async (req, res) => {
     try {
         const { id } = req.params;
@@ -259,6 +256,7 @@ exports.getOrderDetails = async (req, res) => {
     }
 };
 
+// Update the processing status of an order (e.g., DELIVERED)
 exports.updateOrderStatus = async (req, res) => {
     try {
         const { id } = req.params;

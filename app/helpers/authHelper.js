@@ -14,15 +14,18 @@ const options = {
     allowInsecureKeySizes: true,
 };
 
+// Generate a signed JWT token for the given payload
 exports.getAuthToken = (payload) => {
     return jwt.sign(payload, privateKey, options);
 };
 
+// Verify a JWT token using the public key
 exports.verifyToken = (token) => {
     const payload = jwt.verify(token, publicKey, options);
     return payload;
 };
 
+// (Optional) Helper to programmatically create a Super Admin account
 exports.createSuperAdminAccount = async (email, password) => {
     try {
         const existingUser = await User.findOne({ email });

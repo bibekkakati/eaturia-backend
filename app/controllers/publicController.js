@@ -2,6 +2,7 @@ const { success, failure } = require("../helpers/responseHelper");
 const Menu = require("../models/Menu");
 const Order = require("../models/Order");
 
+// Fetch the active menu for a specific restaurant
 exports.getRestaurantMenu = async (req, res) => {
     try {
         const { id } = req.params;
@@ -22,6 +23,7 @@ exports.getRestaurantMenu = async (req, res) => {
     }
 };
 
+// Process and create a new customer order
 exports.createOrder = async (req, res) => {
     try {
         const { customerName, customerPhone, tableNumber, restaurantId, cart, menuId } =
@@ -39,8 +41,8 @@ exports.createOrder = async (req, res) => {
             throw new Error("Restaurant and menu id is required");
         }
 
-        // Format of cart = { id: qty }
-        if (!cart || !Object.keys(cart)) {
+        // Ensure the cart contains at least one item
+        if (!cart || !Object.keys(cart).length) {
             throw new Error("Please select items to order");
         }
 
@@ -58,6 +60,7 @@ exports.createOrder = async (req, res) => {
 
         let total = 0;
 
+        // Iterate through menu items and match with items in the customer's cart
         menu.menuItems.forEach((item) => {
             const { _id, name, description, price } = item;
             const quantity = cart[_id];
@@ -98,6 +101,7 @@ exports.createOrder = async (req, res) => {
     }
 };
 
+// Fetch detailed information for a specific order by ID
 exports.getOrderDetails = async (req, res) => {
     try {
         const { id } = req.params;

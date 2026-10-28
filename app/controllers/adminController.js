@@ -4,6 +4,7 @@ const { success, failure } = require("../helpers/responseHelper");
 const Restaurant = require("../models/Restaurant");
 const User = require("../models/User");
 
+// Create a new restaurant entry
 exports.createRestaurant = async (req, res) => {
     try {
         const { name, address, phone, description, logo } = req.body;
@@ -35,6 +36,7 @@ exports.createRestaurant = async (req, res) => {
     }
 };
 
+// Update existing restaurant details
 exports.updateRestaurant = async (req, res) => {
     try {
         const { id } = req.params;
@@ -71,6 +73,7 @@ exports.updateRestaurant = async (req, res) => {
     }
 };
 
+// Activate or Deactivate a restaurant
 exports.markRestaurantStatus = async (req, res) => {
     try {
         const { id } = req.params;
@@ -93,6 +96,7 @@ exports.markRestaurantStatus = async (req, res) => {
     }
 };
 
+// Fetch list of all registered restaurants
 exports.getRestaurants = async (req, res) => {
     try {
         const restaurants = await Restaurant.find().lean();
@@ -109,6 +113,7 @@ exports.getRestaurants = async (req, res) => {
     }
 };
 
+// Fetch detailed information for a specific restaurant by ID
 exports.getRestaurantDetails = async (req, res) => {
     try {
         const { id } = req.params;
@@ -131,6 +136,7 @@ exports.getRestaurantDetails = async (req, res) => {
     }
 };
 
+// Fetch all administrators associated with a specific restaurant
 exports.getRestaurantAdminList = async (req, res) => {
     try {
         const { id } = req.params;
@@ -158,6 +164,7 @@ exports.getRestaurantAdminList = async (req, res) => {
     }
 };
 
+// Create a new administrator user for a restaurant
 exports.createRestaurantAdmin = async (req, res) => {
     try {
         const { id, email, password } = req.body;
